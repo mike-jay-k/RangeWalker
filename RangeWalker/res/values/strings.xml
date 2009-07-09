@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Welcome to the RangeWalker.  Hit the mark button to start, and press again to get your distance.</string>
+    <string name="app_name">RangeWalker</string>
+</resources>
