@@ -20,7 +20,4 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-sdk android:minSdkVersion="3" />
 <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
-
-
-
 </manifest> 
