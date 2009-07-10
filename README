@@ -1,0 +1,6 @@
+RangeWalker v 0.01
+
+Usage:
+Press "Go" to mark your current location.
+Press "Mark" to calculate your distance.
+Along the way the distance will be updated as the location changes, but once you press the "Mark" button that distance will be finalized.
