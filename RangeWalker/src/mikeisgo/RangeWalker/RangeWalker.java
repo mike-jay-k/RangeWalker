@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class RangeWalker extends Activity implements LocationListener {
     /** Called when the activity is first created. */
-	private Button goMark;
+	private Button goMark, markWaypt;
 	private TextView logSheet;
 	
 	private boolean isWalking = false;
@@ -26,42 +26,9 @@ public class RangeWalker extends Activity implements LocationListener {
 	private Double distance = 0.0;
 	private String status = "";
 	
-	private ArrayList<LocSet> rangesWalked = new ArrayList<LocSet>();
+	private ArrayList<EdgeSets> rangesWalked = new ArrayList<EdgeSets>();
 	
-	public class LocSet {
-		public Location startPt;
-		public Location endPt;
-	}
-	
-	private void updateDislay() {
-		full = status + "\n";
-		
-		String s_dist = "";
-		
-		s_dist = Integer.toString(distance.intValue());
-		
-		full += "Distance: " + s_dist + " yards.\n";
-		
-		logSheet.setText(full);
-	}
-	
-	private void setLocStatus(String s) {
-		status = s;
-	}
-	
-	private void doDistanceFromLoc(Location loc) {
-		float meters = mLoc.distanceTo(start);
-		Double dist = meters * 1.0936133;
-		distance = dist;
-	}
-	
-	private void logCurrLocsVector() {
-		LocSet pts = new LocSet();
-		pts.startPt = start;
-		pts.endPt = mLoc;
-		rangesWalked.add(pts);
-	}
-	
+//PUBLIC METHODS
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +37,9 @@ public class RangeWalker extends Activity implements LocationListener {
         //get parts of view
         goMark = (Button) findViewById(R.id.go);
         logSheet = (TextView) findViewById(R.id.log);
-
+        markWaypt = (Button) findViewById(R.id.mark);
+        markWaypt.setEnabled(false); //disable it initially, on when isWalking is = true, off when isWalking = false.
+        
         // set up the LocationManager
         lm = (LocationManager) getSystemService(LOCATION_SERVICE);  
         
@@ -81,64 +50,15 @@ public class RangeWalker extends Activity implements LocationListener {
 				doLineWalking();
 			}
 		});
-    }
-    
-    @Override
-    protected void onDestroy() {
-        stopListening();
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        stopListening();
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        startListening();
-        super.onResume();
-    }
-
-    private void startListening() {
-        lm.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 
-                0, 
-                0, 
-                this
-        );
-    }
-
-    private void stopListening() {
-        if (lm != null)
-                lm.removeUpdates(this);
-    }
-
-
-	protected void doLineWalking() {
-        //checking to see if this is the beginning or end of the walk.
-		if(isWalking == false) {
-			start = mLoc;
-			isWalking = true;
-			goMark.setText("Mark Done!");
-		}
-		else {
-			if((mLoc == null) || (start == null)) {
-				
+        
+        //add listener for waypoint marking
+        markWaypt.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				//set an intermediate way point, and list the distances
 			}
-			else {
-				doDistanceFromLoc(mLoc);
-				logCurrLocsVector();
-			}
-			
-			isWalking = false;
-			goMark.setText("Go");
-			
-			updateDislay();
-		}
-	}
-	
+		});
+    }
+
 	public void onLocationChanged(Location location) {
 		mLoc = location;
 		
@@ -168,5 +88,93 @@ public class RangeWalker extends Activity implements LocationListener {
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		//nothing
 	}
+    
+//PROTECTED METHODS
+    @Override
+    protected void onDestroy() {
+        stopListening();
+        super.onDestroy();
+    }
 
+    @Override
+    protected void onPause() {
+        stopListening();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        startListening();
+        super.onResume();
+    }
+
+	protected void doLineWalking() {
+        //checking to see if this is the beginning or end of the walk.
+		if(isWalking == false) {
+			start = mLoc;
+			isWalking = true;
+			markWaypt.setEnabled(true);
+			goMark.setText("Mark Done!");
+		}
+		else {
+			if((mLoc == null) || (start == null)) {
+				
+			}
+			else {
+				doDistanceFromLoc(mLoc);
+				logCurrLocsVector();
+			}
+			
+			isWalking = false;
+			markWaypt.setEnabled(false);
+			goMark.setText("Go");
+			
+			updateDislay();
+		}
+	}
+
+//PRIVATE METHODS
+    private void startListening() {
+        lm.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, 
+                0, 
+                0, 
+                this
+        );
+    }
+
+    private void stopListening() {
+        if (lm != null)
+                lm.removeUpdates(this);
+    }
+
+	private void updateDislay() {
+		full = status + "\n";
+		
+		String s_dist = "";
+		
+		s_dist = Integer.toString(distance.intValue());
+		
+		full += "Distance: " + s_dist + " yards.\n";
+		
+		logSheet.setText(full);
+	}
+	
+	private void setLocStatus(String s) {
+		status = s;
+	}
+	
+	private void doDistanceFromLoc(Location loc) {
+		float meters = mLoc.distanceTo(start);
+		Double dist = meters * 1.0936133;
+		distance = dist;
+	}
+	
+	private void logCurrLocsVector() {
+		LocSet pts = new LocSet();
+		pts.startPt = start;
+		pts.endPt = mLoc;
+		rangesWalked.add(pts);
+	}
+	
 }
