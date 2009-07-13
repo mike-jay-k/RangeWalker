@@ -2,6 +2,8 @@ package mikeisgo.RangeWalker;
 
 import java.util.ArrayList;
 
+import mikeisgo.RangeWalker.LocSets.LocationSetMgr;
+
 import android.app.Activity;
 import android.location.Location;
 import android.location.LocationListener;
@@ -26,7 +28,7 @@ public class RangeWalker extends Activity implements LocationListener {
 	private Double distance = 0.0;
 	private String status = "";
 	
-	private ArrayList<EdgeSets> rangesWalked = new ArrayList<EdgeSets>();
+	private LocationSetMgr locSetMgr;
 	
 //PUBLIC METHODS
     @Override
@@ -151,11 +153,13 @@ public class RangeWalker extends Activity implements LocationListener {
 	private void updateDislay() {
 		full = status + "\n";
 		
-		String s_dist = "";
+//		String s_dist = "";
+//		
+//		s_dist = Integer.toString(distance.intValue());
+//		
+//		full += "Distance: " + s_dist + " yards.\n";
 		
-		s_dist = Integer.toString(distance.intValue());
-		
-		full += "Distance: " + s_dist + " yards.\n";
+		full += locSetMgr.getReport();
 		
 		logSheet.setText(full);
 	}
@@ -171,10 +175,11 @@ public class RangeWalker extends Activity implements LocationListener {
 	}
 	
 	private void logCurrLocsVector() {
-		LocSet pts = new LocSet();
-		pts.startPt = start;
-		pts.endPt = mLoc;
-		rangesWalked.add(pts);
+//		LocSet pts = new LocSet();
+//		pts.startPt = start;
+//		pts.endPt = mLoc;
+//		rangesWalked.add(pts);
+		locSetMgr.addToCur(start, mLoc);
 	}
 	
 }
